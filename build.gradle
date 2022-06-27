@@ -13,6 +13,7 @@ plugins {
 	id 'org.springframework.boot' version '2.3.0.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'war'
 }
 
 group = 'com.dini.stop'
@@ -27,9 +28,6 @@ repositories {
 	mavenCentral()
 }
 
-apply plugin: 'com.google.cloud.tools.appengine'
-
-def projectId = 'dinistop-348723'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
