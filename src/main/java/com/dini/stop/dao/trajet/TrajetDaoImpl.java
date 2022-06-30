@@ -5,6 +5,8 @@ import com.dini.stop.bean.TrajetBean;
 import com.dini.stop.bean.exception.DiniStopException;
 import com.dini.stop.bean.exception.ReturnCode;
 import com.dini.stop.data.TrajetData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ import java.util.UUID;
 
 @Component
 public class TrajetDaoImpl implements TrajetDao{
+
+    private static final Logger LOG = LoggerFactory.getLogger(TrajetDaoImpl.class);
 
     private TrajetData data;
 
@@ -35,6 +39,7 @@ public class TrajetDaoImpl implements TrajetDao{
             response.setCode(ReturnCode.TRAJET_OK.getCode());
             messages.put("TRAJET_OK", "Trajet ajouté avec succès.");
         } catch (DiniStopException e) {
+            LOG.error("ERROR ajouterTrajet : {}", e);
             response.setCode(ReturnCode.ERROR_TRAJET.getCode());
             messages.put("ERROR_TRAJET", "Erreur ajout d'un trajet");
             messages.put("ERROR", e.getCause().getMessage());
@@ -55,6 +60,7 @@ public class TrajetDaoImpl implements TrajetDao{
             response.setCode(ReturnCode.TRAJET_OK.getCode());
             messages.put("GET_TRAJET_OK", "Trajets récupérés avec succès.");
         } catch (DiniStopException e) {
+            LOG.error("ERROR getTrajetsByUser : {}", e);
             response.setCode(ReturnCode.ERROR_TRAJET.getCode());
             messages.put("ERROR_GET_TRAJET", "Erreur get trajets");
             messages.put("ERROR", e.getCause().getMessage());

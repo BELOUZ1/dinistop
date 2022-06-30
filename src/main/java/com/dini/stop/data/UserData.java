@@ -67,14 +67,30 @@ public class UserData {
         return existe;
     }
 
+    public UserBean getUtilisateur(String email) throws DiniStopException {
+
+        String query =  "SELECT * FROM Utilisateur u " +
+                        "WHERE u.email = ?;";
+
+        Object params[] = new Object[] {email};
+        UserBean res ;
+
+        try {
+            res = template.queryForObject(
+                    query, new UserMapper(), params);
+            return res;
+        } catch (EmptyResultDataAccessException e) {
+            throw new DiniStopException("Email ou mot de passe incorrecte !!!",e, ReturnCode.ERROR_USER);
+        }catch (Exception e) {
+            throw new DiniStopException("Erreur connexion",e,ReturnCode.ERROR_USER);
+        }
+
+    }
+
     public UserBean getUtilisateur(String email, String motDePasse) throws DiniStopException {
 
-        String query = "SELECT " +
-                "u.id, u.idutilisateur, u.nom, u.prenom, u.datenaissance, u.telephone, u.email, u.motdepasse, u.emailvalide, u.telephonevalide, " +
-                "v.id, v.idvehicule, v.idutilisateur, v.matricule, v.marque, v.modele, v.couleur, v.anneeimatriculation " +
-                "FROM Utilisateur u " +
-                "LEFT JOIN Vehicule v ON u.idutilisateur = v.idutilisateur " +
-                "WHERE u.email = ? AND motDePasse = ?;";
+        String query = "SELECT * FROM Utilisateur u " +
+                "WHERE u.email = ? AND u.motDePasse = ?;";
 
         Object params[] = new Object[] {email,motDePasse};
         UserBean res ;
@@ -92,8 +108,8 @@ public class UserData {
     }
 
     public void inscription(UserBean userBean) throws DiniStopException {
-        String query = "INSERT INTO Utilisateur (idutilisateur, nom, prenom, datenaissance, telephone, email, motdepasse)"
-                + " VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO Utilisateur (idutilisateur, nom, prenom, datenaissance, telephone, email, motdepasse, encodedmotdepasse, emailvalide, telephonevalide)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         Object params[] = new Object[] {
                 userBean.getIdUtilisateur(),
@@ -102,7 +118,10 @@ public class UserData {
                 userBean.getDateNaissance(),
                 userBean.getTelephone(),
                 userBean.getEmail(),
-                userBean.getMotDePasse()
+                userBean.getMotDePasse(),
+                userBean.getEncodedMotDePasse(),
+                userBean.isEmailValide(),
+                userBean.isTelephoneValide()
         };
 
         try {

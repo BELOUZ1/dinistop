@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+
+    <Properties>
+        <Property name="application.name">com.dini.stop</Property>
+        <Property name="main.log.name">dinistop</Property>
+    </Properties>
+
+    <Appenders>
+
+        <RollingRandomAccessFile name="MainLog"
+                                 fileName="${sys:catalina.base}/logs/${main.log.name}.log"
+                                 filePattern="${sys:catalina.base}/logs/%d{yyyy-MM-dd}-%i-${application.name}.log.gz">
+            <PatternLayout>
+                <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level FT:%MDC{FishTag} %c{1.} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- tous les jours (voir filePattern -->
+                <TimeBasedTriggeringPolicy/>
+                <!-- ou tout les 150 M -->
+                <SizeBasedTriggeringPolicy size="150 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10">
+                <!--  purge des logs compressés -->
+                <Delete basePath="${sys:catalina.base}/logs/">
+                    <IfFileName glob="*.log.gz">
+                        <IfLastModified age="5d"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level FT:%MDC{FishTag} %c{1.} - %msg%n"/>
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="com.dini.stop" additivity="false"
+                level="error">
+            <AppenderRef ref="MainLog"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="MainLog"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>

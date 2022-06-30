@@ -2,7 +2,6 @@ package com.dini.stop.bean;
 
 public class VehiculeBean {
 
-    private String id;
     private String idVehicule;
     private String idUtilisateur;
     private String matricule;
@@ -12,14 +11,6 @@ public class VehiculeBean {
     private String anneeImatriculation;
 
     public VehiculeBean() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getIdVehicule() {

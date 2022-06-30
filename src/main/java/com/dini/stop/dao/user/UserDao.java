@@ -2,14 +2,18 @@ package com.dini.stop.dao.user;
 
 import com.dini.stop.bean.ResponseContext;
 import com.dini.stop.bean.UserBean;
+import com.dini.stop.bean.exception.DiniStopException;
 
 
 public interface UserDao {
 
-    ResponseContext inscription(UserBean userBean);
+    void inscription(UserBean userBean) throws DiniStopException;
 
-    ResponseContext connexion(UserBean userBean);
+    UserBean connexion(UserBean userBean) throws DiniStopException;
 
-    ResponseContext validerUtilisateur(String idUtilisateur, String type);
+    void validerUtilisateur(String idUtilisateur, String type) throws DiniStopException;
 
+    UserBean getUserByUserName(String userName);
+
+    boolean utilisateurExiste(String email) throws DiniStopException;
 }

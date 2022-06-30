@@ -6,103 +6,85 @@ import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.bean.exception.DiniStopException;
 import com.dini.stop.bean.exception.ReturnCode;
 import com.dini.stop.data.UserData;
+import com.dini.stop.data.VehiculeData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.List;
+
 import java.util.UUID;
 
 @Service
 public class UserDaoImpl implements UserDao{
 
-    private UserData data;
+    private static final Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
+
+    private UserData dataUser;
+
+    private VehiculeData dataVehicule;
 
     private JavaMailSender emailSender;
 
     private HttpServletRequest httpServletRequest;
 
+
     @Autowired
-    public UserDaoImpl(UserData data, HttpServletRequest httpServletRequest, JavaMailSender emailSender) {
-        this.data = data;
+    public UserDaoImpl(UserData data, VehiculeData dataVehicule, HttpServletRequest httpServletRequest,
+                       JavaMailSender emailSender) {
+        this.dataUser = data;
+        this.dataVehicule = dataVehicule;
         this.emailSender = emailSender;
         this.httpServletRequest = httpServletRequest;
     }
 
     @Override
-    public ResponseContext inscription(UserBean userBean) {
+    public void inscription(UserBean userBean) throws DiniStopException {
+         String idUtilisateur = UUID.randomUUID().toString();
+         userBean.setIdUtilisateur(idUtilisateur);
+         dataUser.inscription(userBean);
+         sendMail(userBean);
 
-        ResponseContext response = new ResponseContext();
-        Map<String, String> messages = new HashMap<>();
-
-        try {
-
-            boolean userExist = data.utilisateurExiste(userBean.getEmail());
-
-            if(userExist){
-                response.setCode(ReturnCode.USER_EXIST.getCode());
-                messages.put("INSCRIPTION_ERROR", "Utilisateur " + userBean.getEmail() + " existe déja !");
-                response.setMessages(messages);
-
-                return response;
-            }
-
-            String idUtilisateur = UUID.randomUUID().toString();
-            userBean.setIdUtilisateur(idUtilisateur);
-            data.inscription(userBean);
-            sendMail(userBean);
-            response.setCode(ReturnCode.USER_OK.getCode());
-            messages.put("INSCRIPTION_OK", "Inscription a été effectuée avec succès.");
-            response.setMessages(messages);
-
-        } catch (DiniStopException e) {
-            response.setCode(ReturnCode.ERROR_USER.getCode());
-            messages.put("INSCRIPTION_ERROR", "Erreur inscription.");
-            response.setMessages(messages);
-        }
-        return response;
     }
 
     @Override
-    public ResponseContext connexion(UserBean userBean) {
-        ResponseContext response = new ResponseContext();
-        Map<String, String> messages = new HashMap<>();
-        try {
-            UserBean bean = data.getUtilisateur(userBean.getEmail(), userBean.getMotDePasse());
-            response.setContext(bean);
-            response.setCode(ReturnCode.USER_OK.getCode());
-            messages.put("CONNEXION_OK", "Connexion a été effectuée avec succès.");
-            response.setMessages(messages);
-        } catch (DiniStopException e) {
-            response.setCode(ReturnCode.ERROR_USER.getCode());
-            messages.put("CONNEXION_ERROR", e.getMessage());
-            messages.put("ERROR", e.getCause().getMessage());
-            response.setMessages(messages);
-        }
-
-        return response;
+    public UserBean connexion(UserBean userBean) throws DiniStopException {
+        UserBean bean = dataUser.getUtilisateur(userBean.getEmail(), userBean.getMotDePasse());
+        List<VehiculeBean> vehicules = dataVehicule.getVehiculesByUser(bean.getIdUtilisateur());
+        bean.setVehicules(vehicules);
+        return bean;
     }
 
     @Override
-    public ResponseContext validerUtilisateur(String idUtilisateur, String type) {
-        ResponseContext response = new ResponseContext();
-        Map<String, String> messages = new HashMap<>();
+    public void validerUtilisateur(String idUtilisateur, String type) throws DiniStopException{
+        dataUser.validerUtilisateur(idUtilisateur, type);
+    }
+
+    @Override
+    public UserBean getUserByUserName(String userName) {
+
+        UserBean res = null;
+
         try {
-            data.validerUtilisateur(idUtilisateur, type);
-            response.setCode(ReturnCode.USER_OK.getCode());
-            messages.put("VALIDATION_OK", "Validation " + type + " a été effectuée avec succès.");
+            res = dataUser.getUtilisateur(userName);
         } catch (DiniStopException e) {
-            response.setCode(ReturnCode.ERROR_USER.getCode());
-            messages.put("VALIDATION_ERROR", "Erreur validation " + type );
-            messages.put("ERROR", e.getCause().getMessage());
+            LOG.error("ERROR getUserByUserName : {}", e);
         }
 
-        response.setMessages(messages);
-        return response;
+        return res;
+    }
+
+    @Override
+    public boolean utilisateurExiste(String email) throws DiniStopException {
+        boolean userExist = dataUser.utilisateurExiste(email);
+        return userExist;
     }
 
 
@@ -110,11 +92,22 @@ public class UserDaoImpl implements UserDao{
 
         try {
 
+            String contextPath = httpServletRequest.getContextPath();
 
-            String urlConfirmation = "http://" + httpServletRequest.getServerName()
-                    + ":" + httpServletRequest.getServerPort()
-                    + "/" + httpServletRequest.getContextPath()
-                    +"/api/confirmationuser/" + utilisateur.getIdUtilisateur();
+            StringBuilder sb = new StringBuilder("http://");
+            sb.append(httpServletRequest.getServerName());
+            sb.append(":");
+            sb.append(httpServletRequest.getServerPort());
+
+            if(contextPath != null && !contextPath.isEmpty()){
+                sb.append("/");
+                sb.append(contextPath);
+            }
+
+            sb.append("/api/user/validation/email/");
+            sb.append(utilisateur.getIdUtilisateur());
+
+            String urlConfirmation = sb.toString();
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("belouz2@outlook.fr");
@@ -127,6 +120,7 @@ public class UserDaoImpl implements UserDao{
             emailSender.send(message);
 
         } catch (Exception e) {
+            LOG.error("ERROR sendMail : {}", e);
             throw new DiniStopException("",e);
         }
 

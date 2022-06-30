@@ -5,7 +5,8 @@ import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.bean.exception.DiniStopException;
 import com.dini.stop.bean.exception.ReturnCode;
 import com.dini.stop.data.VehiculeData;
-import io.swagger.annotations.Authorization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,8 @@ import java.util.UUID;
 
 @Component
 public class VehiculeDaoImpl implements VehiculeDao{
+
+    private static final Logger LOG = LoggerFactory.getLogger(VehiculeDaoImpl.class);
 
     private VehiculeData data;
 
@@ -36,6 +39,7 @@ public class VehiculeDaoImpl implements VehiculeDao{
             messages.put("VEHICULE_OK", "Vehicule ajouté avec succès.");
             response.setMessages(messages);
         } catch (DiniStopException e) {
+            LOG.error("ERROR ajouterVeicule : {}", e);
             response.setCode(ReturnCode.ERROR_VEHICULE.getCode());
             messages.put("VEHICULE_ERROR", e.getMessage());
             messages.put("ERROR", e.getCause().getMessage());
@@ -56,6 +60,7 @@ public class VehiculeDaoImpl implements VehiculeDao{
             response.setCode(ReturnCode.VEHICULE_OK.getCode());
             messages.put("VEHICULE_OK", "Vehicule supprimé avec succès.");
         } catch (DiniStopException e) {
+            LOG.error("ERROR supprimerVeicule : {}", e);
             response.setCode(ReturnCode.ERROR_VEHICULE.getCode());
             messages.put("VEHICULE_ERROR", e.getMessage());
             messages.put("ERROR", e.getCause().getMessage());

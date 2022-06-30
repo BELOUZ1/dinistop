@@ -21,17 +21,7 @@ public class UserMapper implements RowMapper<UserBean> {
         user.setTelephone(rs.getString("telephone"));
         user.setEmailValide(rs.getBoolean("emailvalide"));
         user.setTelephoneValide(rs.getBoolean("telephonevalide"));
-
-        VehiculeBean vehiculeBean = new VehiculeBean();
-        vehiculeBean.setIdVehicule(rs.getString("idvehicule"));
-        vehiculeBean.setIdUtilisateur(rs.getString("idutilisateur"));
-        vehiculeBean.setCouleur(rs.getString("couleur"));
-        vehiculeBean.setMarque(rs.getString("marque"));
-        vehiculeBean.setMatricule(rs.getString("matricule"));
-        vehiculeBean.setAnneeImatriculation(rs.getString("anneeimatriculation"));
-        vehiculeBean.setModele(rs.getString("modele"));
-
-        user.setVehicule(vehiculeBean);
+        user.setEncodedMotDePasse(rs.getString("encodedmotdepasse"));
 
         return user;
     }

@@ -1,6 +1,7 @@
 package com.dini.stop.bean;
 
 import java.util.Date;
+import java.util.List;
 
 public class UserBean {
 
@@ -11,9 +12,11 @@ public class UserBean {
     private String telephone;
     private String email;
     private String motDePasse;
+    private String encodedMotDePasse;
     private boolean emailValide;
     private boolean telephoneValide;
-    private VehiculeBean vehicule;
+    private List<VehiculeBean> vehicules;
+    private String token;
 
 
     public UserBean() {
@@ -91,11 +94,27 @@ public class UserBean {
         this.telephoneValide = telephoneValide;
     }
 
-    public VehiculeBean getVehicule() {
-        return vehicule;
+    public List<VehiculeBean> getVehicules() {
+        return vehicules;
     }
 
-    public void setVehicule(VehiculeBean vehicule) {
-        this.vehicule = vehicule;
+    public void setVehicules(List<VehiculeBean> vehicules) {
+        this.vehicules = vehicules;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getEncodedMotDePasse() {
+        return encodedMotDePasse;
+    }
+
+    public void setEncodedMotDePasse(String encodedMotDePasse) {
+        this.encodedMotDePasse = encodedMotDePasse;
     }
 }
