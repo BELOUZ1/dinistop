@@ -42,6 +42,7 @@
         <Logger name="com.dini.stop" additivity="false"
                 level="error">
             <AppenderRef ref="MainLog"/>
+            <AppenderRef ref="Console"/>
         </Logger>
 
         <Root level="info">
