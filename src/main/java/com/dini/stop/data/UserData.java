@@ -2,26 +2,24 @@ package com.dini.stop.data;
 
 
 import com.dini.stop.bean.UserBean;
-import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.bean.mapper.UserMapper;
 import com.dini.stop.bean.exception.DiniStopException;
 import com.dini.stop.bean.exception.ReturnCode;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionTemplate;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +44,8 @@ public class UserData {
 
     @Autowired
     public UserData(DataSource dataSource, Configuration configuration,
-                    HttpServletRequest httpServletRequest, JavaMailSender emailSender, PlatformTransactionManager transactionManager) {
+                    HttpServletRequest httpServletRequest, JavaMailSender emailSender,
+                    PlatformTransactionManager transactionManager) {
         this.template = new JdbcTemplate(dataSource);
         this.configuration = configuration;
         this.httpServletRequest = httpServletRequest;
@@ -54,17 +53,11 @@ public class UserData {
         this.transactionManager = transactionManager;
     }
 
-    public void validerUtilisateur(String idUtilisateur, String type) throws DiniStopException {
+    public void validerEmail(String idUtilisateur) throws DiniStopException {
 
-        String request;
+        String  request = "UPDATE Utilisateur SET emailvalide = true WHERE idutilisateur = ?";
 
         Object params[] = new Object[] {idUtilisateur};
-
-        if(type.equals("email")){
-            request = "UPDATE Utilisateur SET emailvalide = true WHERE idutilisateur = ?";
-        }else{
-            request = "UPDATE Utilisateur SET telephonevalide = true WHERE idutilisateur = ?";
-        }
 
         try {
             template.update(request,params);
@@ -73,6 +66,21 @@ public class UserData {
         }
 
     }
+
+    public void validerTelephone(String idUtilisateur) throws DiniStopException {
+
+        String  request = "UPDATE Utilisateur SET telephonevalide = true WHERE idutilisateur = ?";
+
+        Object params[] = new Object[] {idUtilisateur};
+
+        try {
+            template.update(request,params);
+        }catch (Exception e){
+            throw  new DiniStopException(e.getMessage(), e);
+        }
+
+    }
+
 
     public boolean utilisateurExiste(String email) throws DiniStopException {
 
@@ -170,6 +178,30 @@ public class UserData {
         }
     }
 
+    public void sendSMS(String telephone, String idUtilisateur) {
+
+        String contextPath = httpServletRequest.getContextPath();
+
+        StringBuilder sb = new StringBuilder("http://");
+        sb.append(httpServletRequest.getServerName());
+        sb.append(":");
+        sb.append(httpServletRequest.getServerPort());
+
+        if(contextPath != null && !contextPath.isEmpty()){
+            sb.append("/");
+            sb.append(contextPath);
+        }
+
+        sb.append("/api/user/validation/telephone/");
+        sb.append(idUtilisateur);
+
+        String urlConfirmation = sb.toString();
+
+        Twilio.init("AC6d779c10e208ce53c58a1c61d8d44daa", "dde15b57f2a1cf93d527b4608c3abd30");
+
+        Message.creator(new PhoneNumber(telephone),
+                new PhoneNumber("+19362275298"), urlConfirmation).create();
+    }
 
     private void sendMail(UserBean utilisateur) throws TemplateException, IOException, MessagingException {
 

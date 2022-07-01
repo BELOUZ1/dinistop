@@ -1,36 +1,20 @@
 package com.dini.stop.dao.user;
 
-import com.dini.stop.bean.ResponseContext;
 import com.dini.stop.bean.UserBean;
 import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.bean.exception.DiniStopException;
-import com.dini.stop.bean.exception.ReturnCode;
 import com.dini.stop.data.UserData;
 import com.dini.stop.data.VehiculeData;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.text.MessageFormat;
-
-import java.util.HashMap;
 import java.util.List;
 
-import java.util.Map;
 import java.util.UUID;
 
-@Service
+@Component
 public class UserDaoImpl implements UserDao{
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
@@ -62,8 +46,18 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public void validerUtilisateur(String idUtilisateur, String type) throws DiniStopException{
-        dataUser.validerUtilisateur(idUtilisateur, type);
+    public void validerEmail(String idUtilisateur) throws DiniStopException{
+        dataUser.validerEmail(idUtilisateur);
+    }
+
+    @Override
+    public void validerTelephone(String idUtilisateur) throws DiniStopException {
+        dataUser.validerTelephone(idUtilisateur);
+    }
+
+    @Override
+    public void sendSMS(String telephone, String idUtilisateur) {
+        dataUser.sendSMS(telephone, idUtilisateur);
     }
 
     @Override

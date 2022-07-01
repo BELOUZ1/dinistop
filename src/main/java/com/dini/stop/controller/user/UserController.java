@@ -3,7 +3,6 @@ package com.dini.stop.controller.user;
 import com.dini.stop.bean.ResponseContext;
 import com.dini.stop.bean.UserBean;
 import com.dini.stop.controller.AbstractController;
-import com.dini.stop.service.JwtUserDetailsService;
 import com.dini.stop.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,10 +44,24 @@ public class UserController extends AbstractController {
         return ResponseEntity.status(context.getHttpStatus()).body(context);
     }
 
-    @ApiOperation(value = "Validation utilisateur")
-    @GetMapping("/validation/{type}/{idutilisateur}")
-    public ResponseEntity<ResponseContext> validationUtilisateur(@PathVariable String type, @PathVariable("idutilisateur") String idUtilisateur){
-        ResponseContext context = userService.validerUtilisateur(idUtilisateur, type);
+    @ApiOperation(value = "Validation Email")
+    @GetMapping("/validation/email/{idutilisateur}")
+    public ResponseEntity<ResponseContext> validationEmail(@PathVariable("idutilisateur") String idUtilisateur){
+        ResponseContext context = userService.validerEmail(idUtilisateur);
+        return ResponseEntity.status(context.getHttpStatus()).body(context);
+    }
+
+    @ApiOperation(value = "Validation Telephone")
+    @GetMapping("/validation/telephone/{idutilisateur}")
+    public ResponseEntity<ResponseContext> validationTelephone(@PathVariable("idutilisateur") String idUtilisateur){
+        ResponseContext context = userService.validerTelephone(idUtilisateur);
+        return ResponseEntity.status(context.getHttpStatus()).body(context);
+    }
+
+    @ApiOperation(value = "Send SMS")
+    @GetMapping("/sendsms/{telephone}/{idutilisateur}")
+    public ResponseEntity<ResponseContext> sendSMS(@PathVariable("telephone") String telephone, @PathVariable("idutilisateur") String idUtilisateur){
+        ResponseContext context = userService.sendSMS(telephone, idUtilisateur);
         return ResponseEntity.status(context.getHttpStatus()).body(context);
     }
 }

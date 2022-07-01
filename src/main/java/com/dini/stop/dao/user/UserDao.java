@@ -1,6 +1,5 @@
 package com.dini.stop.dao.user;
 
-import com.dini.stop.bean.ResponseContext;
 import com.dini.stop.bean.UserBean;
 import com.dini.stop.bean.exception.DiniStopException;
 
@@ -11,7 +10,11 @@ public interface UserDao {
 
     UserBean connexion(UserBean userBean) throws DiniStopException;
 
-    void validerUtilisateur(String idUtilisateur, String type) throws DiniStopException;
+    void validerEmail(String idUtilisateur) throws DiniStopException;
+
+    void validerTelephone(String idUtilisateur) throws DiniStopException;
+
+    void sendSMS(String telephone, String idUtilisateur);
 
     UserBean getUserByUserName(String userName);
 

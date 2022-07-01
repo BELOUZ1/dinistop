@@ -40,7 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/user/connexion",
             "/api/user/inscription",
             "/api/user/hello",
-            "/api/user/validation/**"
+            "/api/user/validation/**",
+            "/api/user/sendsms/**"
 
     };
 

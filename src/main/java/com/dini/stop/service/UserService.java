@@ -71,20 +71,38 @@ public class UserService {
 
     }
 
-
-    public ResponseContext validerUtilisateur(String idUtilisateur, String type) {
+    public ResponseContext validerTelephone(String idUtilisateur) {
         ResponseContext response = new ResponseContext();
         Map<String, String> messages = new HashMap<>();
         try {
-            userDao.validerUtilisateur(idUtilisateur, type);
+            userDao.validerTelephone(idUtilisateur);
             response.setCode(ReturnCode.USER_OK.getCode());
             response.setHttpStatus(HttpStatus.OK);
-            messages.put("VALIDATION_OK", "Validation " + type + " a été effectuée avec succès.");
+            messages.put("VALIDATION_OK", "Validation telephone a été effectuée avec succès.");
+        } catch (DiniStopException e) {
+            LOG.error("ERROR validerTelephone : {}", e);
+            response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setCode(ReturnCode.ERROR_USER.getCode());
+            messages.put("VALIDATION_ERROR", "Erreur validation telephone");
+            messages.put("ERROR", e.getCause().getMessage());
+        }
+
+        return response;
+    }
+
+    public ResponseContext validerEmail(String idUtilisateur) {
+        ResponseContext response = new ResponseContext();
+        Map<String, String> messages = new HashMap<>();
+        try {
+            userDao.validerEmail(idUtilisateur);
+            response.setCode(ReturnCode.USER_OK.getCode());
+            response.setHttpStatus(HttpStatus.OK);
+            messages.put("VALIDATION_OK", "Validation email a été effectuée avec succès.");
         } catch (DiniStopException e) {
             LOG.error("ERROR validerUtilisateur : {}", e);
             response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setCode(ReturnCode.ERROR_USER.getCode());
-            messages.put("VALIDATION_ERROR", "Erreur validation " + type );
+            messages.put("VALIDATION_ERROR", "Erreur validation email");
             messages.put("ERROR", e.getCause().getMessage());
         }
         response.setMessages(messages);
@@ -92,6 +110,17 @@ public class UserService {
 
     }
 
+    public ResponseContext sendSMS(String telephone, String idUtilisateur) {
+
+        ResponseContext response = new ResponseContext();
+        Map<String, String> messages = new HashMap<>();
+        userDao.sendSMS(telephone, idUtilisateur);
+        response.setCode(ReturnCode.USER_OK.getCode());
+        response.setHttpStatus(HttpStatus.OK);
+        messages.put("INSCRIPTION_OK", "ENvoie SMS a été effectuée avec succès.");
+        response.setMessages(messages);
+        return response;
+    }
 
     public ResponseContext inscription(UserBean userBean) {
         String encryptedPassword = bcryptEncoder.encode(userBean.getMotDePasse());
