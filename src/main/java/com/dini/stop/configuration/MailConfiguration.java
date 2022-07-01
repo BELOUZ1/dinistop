@@ -17,7 +17,7 @@ public class MailConfiguration {
         mailSender.setPort(587);
 
         mailSender.setUsername("dini.stop2022@gmail.com");
-        mailSender.setPassword("jttdlxslddnrhjec ////");
+        mailSender.setPassword("jttdlxslddnrhjec");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
