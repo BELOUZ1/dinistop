@@ -9,6 +9,7 @@ import com.dini.stop.dao.user.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -54,10 +55,12 @@ public class UserService {
             bean.setToken(token);
             response.setContext(bean);
             response.setCode(ReturnCode.USER_OK.getCode());
+            response.setHttpStatus(HttpStatus.OK);
             messages.put("CONNEXION_OK", "Connexion a été effectuée avec succès.");
             response.setMessages(messages);
         } catch (DiniStopException e) {
             LOG.error("ERROR connexion : {}", e);
+            response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setCode(ReturnCode.ERROR_USER.getCode());
             messages.put("CONNEXION_ERROR", e.getMessage());
             messages.put("ERROR", e.getCause().getMessage());
@@ -70,20 +73,20 @@ public class UserService {
 
 
     public ResponseContext validerUtilisateur(String idUtilisateur, String type) {
-
         ResponseContext response = new ResponseContext();
         Map<String, String> messages = new HashMap<>();
         try {
             userDao.validerUtilisateur(idUtilisateur, type);
             response.setCode(ReturnCode.USER_OK.getCode());
+            response.setHttpStatus(HttpStatus.OK);
             messages.put("VALIDATION_OK", "Validation " + type + " a été effectuée avec succès.");
         } catch (DiniStopException e) {
             LOG.error("ERROR validerUtilisateur : {}", e);
+            response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setCode(ReturnCode.ERROR_USER.getCode());
             messages.put("VALIDATION_ERROR", "Erreur validation " + type );
             messages.put("ERROR", e.getCause().getMessage());
         }
-
         response.setMessages(messages);
         return response;
 
@@ -93,35 +96,32 @@ public class UserService {
     public ResponseContext inscription(UserBean userBean) {
         String encryptedPassword = bcryptEncoder.encode(userBean.getMotDePasse());
         userBean.setEncodedMotDePasse(encryptedPassword);
-
-
         ResponseContext response = new ResponseContext();
         Map<String, String> messages = new HashMap<>();
-
         try {
-
             boolean userExist = userDao.utilisateurExiste(userBean.getEmail());
-
             if(userExist){
                 LOG.warn("L'utilisateur " + userBean.getEmail() + " existe");
                 response.setCode(ReturnCode.USER_EXIST.getCode());
+                response.setHttpStatus(HttpStatus.OK);
                 messages.put("INSCRIPTION_ERROR", "Utilisateur " + userBean.getEmail() + " existe déja !");
                 response.setMessages(messages);
-
                 return response;
             }
-
             String idUtilisateur = UUID.randomUUID().toString();
             userBean.setIdUtilisateur(idUtilisateur);
             userDao.inscription(userBean);
             response.setCode(ReturnCode.USER_OK.getCode());
+            response.setHttpStatus(HttpStatus.OK);
             messages.put("INSCRIPTION_OK", "Inscription a été effectuée avec succès.");
             response.setMessages(messages);
 
         } catch (DiniStopException e) {
             LOG.error("ERROR inscription : {}", e);
+            response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setCode(ReturnCode.ERROR_USER.getCode());
-            messages.put("INSCRIPTION_ERROR", "Erreur inscription.");
+            messages.put("INSCRIPTION_ERROR", "Erreur inscription");
+            messages.put("ERROR", e.getCause().getMessage());
             response.setMessages(messages);
         }
         return response;

@@ -1,11 +1,13 @@
 package com.dini.stop.dao.vehicule;
 
-import com.dini.stop.bean.ResponseContext;
+
 import com.dini.stop.bean.VehiculeBean;
+import com.dini.stop.bean.exception.DiniStopException;
 
 public interface VehiculeDao {
 
-    ResponseContext ajouterVeicule(VehiculeBean vehiculeBean);
+    void ajouterVehicule(VehiculeBean vehiculeBean) throws DiniStopException;
 
-    ResponseContext supprimerVeicule(String idVehicule);
+    void supprimerVehicule(String idVehicule) throws DiniStopException;
+
 }

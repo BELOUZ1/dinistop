@@ -28,47 +28,13 @@ public class TrajetDaoImpl implements TrajetDao{
     }
 
     @Override
-    public ResponseContext ajouterTrajet(TrajetBean bean) {
-
-        ResponseContext response = new ResponseContext();
-        Map<String, String> messages = new HashMap<>();
-
-        try {
-            bean.setIdTrajet(UUID.randomUUID().toString());
-            data.ajouterTrajet(bean);
-            response.setCode(ReturnCode.TRAJET_OK.getCode());
-            messages.put("TRAJET_OK", "Trajet ajouté avec succès.");
-        } catch (DiniStopException e) {
-            LOG.error("ERROR ajouterTrajet : {}", e);
-            response.setCode(ReturnCode.ERROR_TRAJET.getCode());
-            messages.put("ERROR_TRAJET", "Erreur ajout d'un trajet");
-            messages.put("ERROR", e.getCause().getMessage());
-        }
-
-        response.setMessages(messages);
-        return response;
+    public void ajouterTrajet(TrajetBean bean) throws DiniStopException {
+        data.ajouterTrajet(bean);
     }
 
     @Override
-    public ResponseContext getTrajetsByUser(String idUtilisateur) {
-
-        ResponseContext response = new ResponseContext();
-        Map<String, String> messages = new HashMap<>();
-        try {
-            List<TrajetBean> result = data.getTrajetsByUser(idUtilisateur);
-            response.setContext(result);
-            response.setCode(ReturnCode.TRAJET_OK.getCode());
-            messages.put("GET_TRAJET_OK", "Trajets récupérés avec succès.");
-        } catch (DiniStopException e) {
-            LOG.error("ERROR getTrajetsByUser : {}", e);
-            response.setCode(ReturnCode.ERROR_TRAJET.getCode());
-            messages.put("ERROR_GET_TRAJET", "Erreur get trajets");
-            messages.put("ERROR", e.getCause().getMessage());
-        }
-
-        response.setMessages(messages);
-        return response;
+    public List<TrajetBean> getTrajetsByUser(String idUtilisateur) throws DiniStopException {
+        return data.getTrajetsByUser(idUtilisateur);
     }
-
 
 }

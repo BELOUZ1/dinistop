@@ -34,7 +34,7 @@ public class UserController extends AbstractController {
     @PostMapping("/inscription")
     public ResponseEntity<ResponseContext> inscription(@RequestBody UserBean userBean){
         ResponseContext context = userService.inscription(userBean);
-        return ResponseEntity.ok(context);
+        return ResponseEntity.status(context.getHttpStatus()).body(context);
     }
 
 
@@ -42,13 +42,13 @@ public class UserController extends AbstractController {
     @PostMapping("/connexion")
     public ResponseEntity<ResponseContext> connexion(@RequestBody UserBean userBean){
         ResponseContext context = userService.createAuthenticationToken(userBean);
-        return ResponseEntity.ok(context);
+        return ResponseEntity.status(context.getHttpStatus()).body(context);
     }
 
     @ApiOperation(value = "Validation utilisateur")
     @GetMapping("/validation/{type}/{idutilisateur}")
     public ResponseEntity<ResponseContext> validationUtilisateur(@PathVariable String type, @PathVariable("idutilisateur") String idUtilisateur){
         ResponseContext context = userService.validerUtilisateur(idUtilisateur, type);
-        return ResponseEntity.ok(context);
+        return ResponseEntity.status(context.getHttpStatus()).body(context);
     }
 }

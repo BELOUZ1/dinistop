@@ -1,11 +1,15 @@
 package com.dini.stop.bean;
 
+import org.springframework.http.HttpStatus;
+
 import java.util.List;
 import java.util.Map;
 
 public class ResponseContext<T> {
 
     private int code;
+
+    private HttpStatus httpStatus;
 
     private Map<String, String> messages;
 
@@ -36,5 +40,13 @@ public class ResponseContext<T> {
 
     public void setContext(T context) {
         this.context = context;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
     }
 }
