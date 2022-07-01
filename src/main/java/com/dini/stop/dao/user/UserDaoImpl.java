@@ -110,7 +110,7 @@ public class UserDaoImpl implements UserDao{
             String urlConfirmation = sb.toString();
 
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("belouz2@outlook.fr");
+            message.setFrom("dini.stop2022@gmail.com");
             message.setTo(utilisateur.getEmail());
             message.setSubject("Confirmation d'inscription");
             String content = "Bonjour {0} {1}. Merci de clicker sur le lien pour confirmer votre inscription : {2}";

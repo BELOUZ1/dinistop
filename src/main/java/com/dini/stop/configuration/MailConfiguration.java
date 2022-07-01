@@ -7,16 +7,17 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
-
+@Configuration
 public class MailConfiguration {
 
+    @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
         mailSender.setUsername("dini.stop2022@gmail.com");
-        mailSender.setPassword("DiniStop@/@/2022");
+        mailSender.setPassword("jttdlxslddnrhjec");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
