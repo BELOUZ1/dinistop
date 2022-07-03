@@ -5,7 +5,6 @@ import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.bean.exception.DiniStopException;
 import com.dini.stop.bean.exception.ReturnCode;
 import com.dini.stop.dao.vehicule.VehiculeDao;
-import com.dini.stop.dao.vehicule.VehiculeDaoImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

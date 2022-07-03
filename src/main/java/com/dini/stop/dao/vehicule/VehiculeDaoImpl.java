@@ -1,17 +1,10 @@
 package com.dini.stop.dao.vehicule;
 
-import com.dini.stop.bean.ResponseContext;
 import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.bean.exception.DiniStopException;
-import com.dini.stop.bean.exception.ReturnCode;
 import com.dini.stop.data.VehiculeData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Component

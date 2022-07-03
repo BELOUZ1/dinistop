@@ -1,8 +1,6 @@
 package com.dini.stop.configuration;
 
-import com.dini.stop.bean.exception.DiniStopException;
 import com.dini.stop.service.JwtUserDetailsService;
-import com.dini.stop.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

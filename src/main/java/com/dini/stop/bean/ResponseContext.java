@@ -2,7 +2,6 @@ package com.dini.stop.bean;
 
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
 import java.util.Map;
 
 public class ResponseContext<T> {

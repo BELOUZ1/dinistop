@@ -14,7 +14,7 @@ public interface UserDao {
 
     void validerTelephone(String idUtilisateur) throws DiniStopException;
 
-    void sendSMS(String telephone, String idUtilisateur);
+    void sendSMS(String telephone, String idUtilisateur) throws DiniStopException;
 
     UserBean getUserByUserName(String userName);
 

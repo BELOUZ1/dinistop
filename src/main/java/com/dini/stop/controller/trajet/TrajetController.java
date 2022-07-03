@@ -4,12 +4,10 @@ import com.dini.stop.bean.ResponseContext;
 import com.dini.stop.bean.TrajetBean;
 import com.dini.stop.controller.AbstractController;
 import com.dini.stop.controller.user.UserController;
-import com.dini.stop.dao.trajet.TrajetDao;
 import com.dini.stop.service.TrajetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,9 +2,10 @@ package com.dini.stop.data;
 
 
 import com.dini.stop.bean.UserBean;
-import com.dini.stop.bean.mapper.UserMapper;
 import com.dini.stop.bean.exception.DiniStopException;
 import com.dini.stop.bean.exception.ReturnCode;
+import com.dini.stop.bean.mapper.UserMapper;
+import com.dini.stop.configuration.DiniStopConfig;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -20,6 +21,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
@@ -42,15 +44,18 @@ public class UserData {
 
     private PlatformTransactionManager transactionManager;
 
+    private DiniStopConfig diniStopConfig;
+
     @Autowired
     public UserData(DataSource dataSource, Configuration configuration,
                     HttpServletRequest httpServletRequest, JavaMailSender emailSender,
-                    PlatformTransactionManager transactionManager) {
+                    PlatformTransactionManager transactionManager, DiniStopConfig diniStopConfig) {
         this.template = new JdbcTemplate(dataSource);
         this.configuration = configuration;
         this.httpServletRequest = httpServletRequest;
         this.emailSender = emailSender;
         this.transactionManager = transactionManager;
+        this.diniStopConfig = diniStopConfig;
     }
 
     public void validerEmail(String idUtilisateur) throws DiniStopException {
@@ -178,7 +183,7 @@ public class UserData {
         }
     }
 
-    public void sendSMS(String telephone, String idUtilisateur) {
+    public void sendSMS(String telephone, String idUtilisateur) throws DiniStopException {
 
         String contextPath = httpServletRequest.getContextPath();
 
@@ -197,10 +202,15 @@ public class UserData {
 
         String urlConfirmation = sb.toString();
 
-        Twilio.init("AC6d779c10e208ce53c58a1c61d8d44daa", "dde15b57f2a1cf93d527b4608c3abd30");
+        try{
+            Twilio.init(diniStopConfig.getSmsusername(), diniStopConfig.getSmspassword());
 
-        Message.creator(new PhoneNumber(telephone),
-                new PhoneNumber("+19362275298"), urlConfirmation).create();
+            Message.creator(new PhoneNumber(telephone),
+                    new PhoneNumber(diniStopConfig.getSmsphone()), urlConfirmation).create();
+        }catch (Exception e){
+            throw new DiniStopException("Erreur envoie sms", e);
+        }
+
     }
 
     private void sendMail(UserBean utilisateur) throws TemplateException, IOException, MessagingException {

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
 import java.util.UUID;
 
 @Component
@@ -56,7 +55,7 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public void sendSMS(String telephone, String idUtilisateur) {
+    public void sendSMS(String telephone, String idUtilisateur) throws DiniStopException {
         dataUser.sendSMS(telephone, idUtilisateur);
     }
 

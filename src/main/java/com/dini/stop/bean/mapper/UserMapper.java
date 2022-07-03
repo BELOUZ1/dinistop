@@ -1,7 +1,6 @@
 package com.dini.stop.bean.mapper;
 
 import com.dini.stop.bean.UserBean;
-import com.dini.stop.bean.VehiculeBean;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

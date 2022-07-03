@@ -4,7 +4,6 @@ import com.dini.stop.bean.ResponseContext;
 import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.controller.AbstractController;
 import com.dini.stop.controller.user.UserController;
-import com.dini.stop.dao.vehicule.VehiculeDao;
 import com.dini.stop.service.VehiculeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

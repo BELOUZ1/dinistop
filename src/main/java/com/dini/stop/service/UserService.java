@@ -114,10 +114,17 @@ public class UserService {
 
         ResponseContext response = new ResponseContext();
         Map<String, String> messages = new HashMap<>();
-        userDao.sendSMS(telephone, idUtilisateur);
-        response.setCode(ReturnCode.USER_OK.getCode());
-        response.setHttpStatus(HttpStatus.OK);
-        messages.put("INSCRIPTION_OK", "ENvoie SMS a été effectuée avec succès.");
+        try {
+            userDao.sendSMS(telephone, idUtilisateur);
+            response.setCode(ReturnCode.USER_OK.getCode());
+            response.setHttpStatus(HttpStatus.OK);
+            messages.put("SEND_SMS_OK", "Envoie SMS a été effectuée avec succès.");
+        } catch (DiniStopException e) {
+            response.setCode(ReturnCode.USER_OK.getCode());
+            response.setHttpStatus(HttpStatus.OK);
+            messages.put("SEND_SMS_ERROR", "Erreur envoie SMS.");
+            messages.put("ERROR", e.getCause().getMessage());
+        }
         response.setMessages(messages);
         return response;
     }

@@ -1,9 +1,7 @@
 package com.dini.stop.data;
 
-import com.dini.stop.bean.TrajetBean;
 import com.dini.stop.bean.VehiculeBean;
 import com.dini.stop.bean.exception.DiniStopException;
-import com.dini.stop.bean.mapper.TrajetMapper;
 import com.dini.stop.bean.mapper.VehiculeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
