@@ -34,6 +34,10 @@ import java.util.Map;
 @Repository
 public class UserData {
 
+    private static final String HTTP = "http://";
+
+    private static final String HTTPS = "https://";
+
     private JdbcTemplate template;
 
     private JavaMailSender emailSender;
@@ -186,12 +190,12 @@ public class UserData {
     public void sendSMS(String telephone, String idUtilisateur) throws DiniStopException {
 
         String contextPath = httpServletRequest.getContextPath();
-        String protocole = httpServletRequest.getProtocol();
+        String protocol = httpServletRequest.getProtocol();
         StringBuilder sb = new StringBuilder();
-        if(protocole.toLowerCase().contains("https")){
-            sb.append("https://");
+        if(protocol.toLowerCase().contains("https")){
+            sb.append(HTTPS);
         }else{
-            sb.append("http://");
+            sb.append(HTTP);
         }
         sb.append(httpServletRequest.getServerName());
         sb.append(":");
@@ -224,7 +228,13 @@ public class UserData {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
             String contextPath = httpServletRequest.getContextPath();
 
-            StringBuilder sb = new StringBuilder("http://");
+            String protocol = httpServletRequest.getProtocol();
+            StringBuilder sb = new StringBuilder();
+            if(protocol.toLowerCase().contains("https")){
+                sb.append(HTTPS);
+            }else{
+                sb.append(HTTP);
+            }
             sb.append(httpServletRequest.getServerName());
             sb.append(":");
             sb.append(httpServletRequest.getServerPort());
