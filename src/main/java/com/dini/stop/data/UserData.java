@@ -188,10 +188,10 @@ public class UserData {
         String contextPath = httpServletRequest.getContextPath();
         String protocole = httpServletRequest.getProtocol();
         StringBuilder sb = new StringBuilder();
-        if(protocole.toLowerCase().contains("http")){
-            sb.append("http://");
-        }else{
+        if(protocole.toLowerCase().contains("https")){
             sb.append("https://");
+        }else{
+            sb.append("http://");
         }
         sb.append(httpServletRequest.getServerName());
         sb.append(":");
