@@ -21,6 +21,6 @@ public class RunOnStartup implements ApplicationListener<ApplicationReadyEvent> 
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        LOG.info("DiniStopConfig : {}", diniStopConfig);
+        LOG.debug("DiniStopConfig : {}", diniStopConfig);
     }
 }

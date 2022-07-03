@@ -120,6 +120,7 @@ public class UserService {
             response.setHttpStatus(HttpStatus.OK);
             messages.put("SEND_SMS_OK", "Envoie SMS a été effectuée avec succès.");
         } catch (DiniStopException e) {
+            LOG.error("ERROR SendSMS : {}", e);
             response.setCode(ReturnCode.USER_OK.getCode());
             response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             messages.put("SEND_SMS_ERROR", "Erreur envoie SMS.");
