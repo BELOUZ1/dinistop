@@ -86,7 +86,7 @@ public class UserService {
             messages.put("VALIDATION_ERROR", "Erreur validation telephone");
             messages.put("ERROR", e.getCause().getMessage());
         }
-
+        response.setMessages(messages);
         return response;
     }
 
@@ -121,7 +121,7 @@ public class UserService {
             messages.put("SEND_SMS_OK", "Envoie SMS a été effectuée avec succès.");
         } catch (DiniStopException e) {
             LOG.error("ERROR SendSMS : {}", e);
-            response.setCode(ReturnCode.USER_OK.getCode());
+            response.setCode(ReturnCode.ERROR_USER.getCode());
             response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             messages.put("SEND_SMS_ERROR", "Erreur envoie SMS.");
             messages.put("ERROR", e.getCause().getMessage());

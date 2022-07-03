@@ -186,8 +186,13 @@ public class UserData {
     public void sendSMS(String telephone, String idUtilisateur) throws DiniStopException {
 
         String contextPath = httpServletRequest.getContextPath();
-
-        StringBuilder sb = new StringBuilder("http://");
+        String protocole = httpServletRequest.getProtocol();
+        StringBuilder sb = new StringBuilder();
+        if(protocole.toLowerCase().contains("http")){
+            sb.append("http://");
+        }else{
+            sb.append("https://");
+        }
         sb.append(httpServletRequest.getServerName());
         sb.append(":");
         sb.append(httpServletRequest.getServerPort());
@@ -217,7 +222,6 @@ public class UserData {
 
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-
             String contextPath = httpServletRequest.getContextPath();
 
             StringBuilder sb = new StringBuilder("http://");

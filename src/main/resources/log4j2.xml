@@ -40,13 +40,11 @@
     <Loggers>
 
         <Logger name="com.dini.stop" additivity="false"
-                level="info">
-            <AppenderRef ref="MainLog"/>
+                level="error">
             <AppenderRef ref="Console"/>
         </Logger>
 
         <Root level="info">
-            <AppenderRef ref="MainLog"/>
             <AppenderRef ref="Console"/>
         </Root>
 
